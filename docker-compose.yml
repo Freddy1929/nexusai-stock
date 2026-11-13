@@ -1,0 +1,85 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nexusai-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-nexusai_stock}
+      POSTGRES_USER: ${DB_USER:-nexusai}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-nexusai_dev}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: nexusai-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@nexusai.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin_dev}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+  odoo-postgres:
+    image: postgres:16-alpine
+    container_name: nexusai-odoo-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: ${ODOO_DB_USER:-odoo}
+      POSTGRES_PASSWORD: ${ODOO_DB_PASSWORD:?Agrega ODOO_DB_PASSWORD al archivo .env}
+    volumes:
+      - odoo_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  odoo:
+    image: odoo:18.0-20261112
+    container_name: nexusai-odoo
+    restart: unless-stopped
+    depends_on:
+      odoo-postgres:
+        condition: service_healthy
+    environment:
+      HOST: odoo-postgres
+      PORT: 5432
+      USER: ${ODOO_DB_USER:-odoo}
+      PASSWORD: ${ODOO_DB_PASSWORD:?Agrega ODOO_DB_PASSWORD al archivo .env}
+      ODOO_MASTER_PASSWORD: ${ODOO_MASTER_PASSWORD:?Agrega ODOO_MASTER_PASSWORD al archivo .env}
+    ports:
+      - "127.0.0.1:${ODOO_PORT:-8069}:8069"
+    volumes:
+      - odoo_data:/var/lib/odoo
+      - ./odoo/entrypoint.sh:/mnt/odoo-entrypoint.sh:ro
+      - ./odoo/enterprise-addons:/mnt/enterprise-addons:ro
+      - ./odoo/addons:/mnt/extra-addons:ro
+    entrypoint: ["/bin/sh", "/mnt/odoo-entrypoint.sh"]
+    command: ["--"]
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8069/web/login', timeout=5).read()"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 90s
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+  odoo_postgres_data:
+  odoo_data:

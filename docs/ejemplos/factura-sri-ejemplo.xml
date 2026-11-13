@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<factura id="comprobante" version="2.1.0">
+  <infoTributaria>
+    <ambiente>1</ambiente>
+    <tipoEmision>1</tipoEmision>
+    <razonSocial>Comercial &amp; Asociados</razonSocial>
+    <nombreComercial>Tienda &lt;Central&gt;</nombreComercial>
+    <ruc>1790012345001</ruc>
+    <claveAcceso>1211202601179001234500110010010000000277481903115</claveAcceso>
+    <codDoc>01</codDoc>
+    <estab>001</estab>
+    <ptoEmi>001</ptoEmi>
+    <secuencial>000000027</secuencial>
+    <dirMatriz>Av. Principal &amp; Calle 2</dirMatriz>
+  </infoTributaria>
+  <infoFactura>
+    <fechaEmision>12/11/2026</fechaEmision>
+    <dirEstablecimiento>Quito</dirEstablecimiento>
+    <tipoIdentificacionComprador>05</tipoIdentificacionComprador>
+    <razonSocialComprador>Cliente &amp; Comprador</razonSocialComprador>
+    <identificacionComprador>3012345678</identificacionComprador>
+    <direccionComprador>Calle &lt;Uno&gt;</direccionComprador>
+    <totalSinImpuestos>1.39</totalSinImpuestos>
+    <totalDescuento>0.00</totalDescuento>
+    <totalConImpuestos>
+      <totalImpuesto>
+        <codigo>2</codigo>
+        <codigoPorcentaje>4</codigoPorcentaje>
+        <baseImponible>1.39</baseImponible>
+        <tarifa>15.00</tarifa>
+        <valor>0.21</valor>
+      </totalImpuesto>
+    </totalConImpuestos>
+    <propina>0.00</propina>
+    <importeTotal>1.60</importeTotal>
+    <moneda>DOLAR</moneda>
+    <pagos>
+      <pago>
+        <formaPago>01</formaPago>
+        <total>1.60</total>
+      </pago>
+    </pagos>
+  </infoFactura>
+  <detalles>
+    <detalle>
+      <codigoPrincipal>ARR-001</codigoPrincipal>
+      <descripcion>Arroz &amp; azúcar</descripcion>
+      <cantidad>1.234568</cantidad>
+      <precioUnitario>1.123457</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>1.39</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>4</codigoPorcentaje>
+          <tarifa>15.00</tarifa>
+          <baseImponible>1.39</baseImponible>
+          <valor>0.21</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+  </detalles>
+  <infoAdicional>
+    <campoAdicional nombre="Email">cliente@example.test</campoAdicional>
+    <campoAdicional nombre="Dirección">Calle &lt;Uno&gt;</campoAdicional>
+  </infoAdicional>
+</factura>
